@@ -1,0 +1,33 @@
+'scopeName': 'source.test'
+'name': 'Test'
+'fileTypes': ['test']
+'patterns': [
+    {
+        match: '^(test) (\.+)$',
+        captures:
+            1:
+                name: 'entity.name.function.definition.test'
+            2:
+                name: 'entity.string.test'
+    }
+    {
+        match: '^end\\b',
+        name: 'entity.name.function.definition.test'
+    }
+    {
+        match: '[^:]//.*$',
+        name: 'comment.line.test'
+    }
+    {
+        match: '\'.+?\'',
+        name: 'string.test'
+    }
+    {
+        match: '^(#\\w+)\\s?=((\\s?\\w+)*)$',
+        captures:
+            1:
+                name: 'keyword.control.directive.test'
+            2:
+                name: 'string.test'
+    }
+]

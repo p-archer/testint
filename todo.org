@@ -1,0 +1,39 @@
+#+TITLE: TEST INTERPRETER
+
+* Lookup [2/3]
+** DONE by css
+   CLOSED: [2018-01-03 Wed 13:19]
+** DONE by css and text
+   CLOSED: [2018-01-03 Wed 13:19]
+** TODO by model
+* Actions [4/5]
+** DONE click
+   CLOSED: [2018-01-03 Wed 13:19]
+** DONE load page
+   CLOSED: [2018-01-03 Wed 13:19]
+** DONE send keys
+   CLOSED: [2018-01-03 Wed 13:19]
+** TODO back
+** DONE expect
+   CLOSED: [2018-01-03 Wed 13:19]
+* Functionality [6/8]
+** DONE read file 
+   CLOSED: [2018-01-03 Wed 13:19]
+** DONE parse file
+   CLOSED: [2018-01-03 Wed 13:19]
+   structure:
+   -- compiler directives
+   -- settings/options
+   -- tests
+** DONE create output file
+   CLOSED: [2018-01-03 Wed 13:19]
+** DONE run test
+   CLOSED: [2018-01-03 Wed 15:40]
+** TODO create test functions
+** TODO export test functions
+** DONE add compiler directives
+   CLOSED: [2018-01-03 Wed 13:19]
+** DONE dictionaries
+   CLOSED: [2018-01-03 Wed 15:39]
+* Syntax highlight for Atom
+* Set up reporter for issues with screenshots

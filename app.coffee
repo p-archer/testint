@@ -18,12 +18,13 @@ for arg, index in args
         when '--show-code', '-sc' then showCode = true
         when '--show-structure', '-ss' then showStructure = true
         when '--run', '-r' then runWhenFinished = true
+        when '--headless', '-h' then runHeadless = true
 
+if not output then output = input.replace(/test$/, 'js')
 log()
 console.log 'transpiling', chalk.green input, chalk.yellow '>>>', chalk.green output
 log()
 
-loadDictionary __dirname + '/test.dict.json'
 source = fs.readFileSync __dirname + '/' + input, 'utf-8'
 parsed = parse source
 code = transpile parsed
@@ -37,11 +38,11 @@ if showStructure
         log()
         log 'function', func.name
         for line in func.instructions
-            log '    ' + line.text
+            log '\t' + line.text
     log()
 
+str = code.join '\n'
 if showCode
-    str = code.join '\n'
     log()
     log str
 
@@ -49,7 +50,8 @@ fs.writeFileSync __dirname + '/' + output, str, 'utf-8'
 log()
 
 if runWhenFinished
-    child = spawn 'protractor', ['conf.js', '--specs', output]
+    targetConf = if not runHeadless then 'chrome.conf.js' else 'headless.conf.js'
+    child = spawn 'protractor', [targetConf, '--specs', output]
     child.stdout.on 'data', (data) -> log data
     child.on 'close', (code, signal) ->
         debug 'finished running protractor (exit code ' + code + ')'

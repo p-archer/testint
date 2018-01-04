@@ -28,6 +28,9 @@ String::startsWith = (str) ->
 String::capitalize = () ->
     @[0].toUpperCase() + @slice(1).toLowerCase()
 
+String::toCamelCase = () ->
+    @trim().split(' ')[0].toLowerCase() + @trim().split(' ')[1..].map((x) -> x.capitalize()).join('')
+
 Array::last = () ->
     @[@length-1]
 

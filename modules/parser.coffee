@@ -1,4 +1,5 @@
 moment = require 'moment'
+
 parse = (source) ->
     lines = source.split '\n'
     test =
@@ -15,6 +16,13 @@ parse = (source) ->
             test.directives[key] = value
             continue
 
+        if line.startsWith 'function'
+            test.functions.push
+                name: line.slice 9
+                instructions: []
+                type: 'func'
+            continue
+
         if line.startsWith 'test'
             test.functions.push
                 name: line.slice 5
@@ -25,7 +33,7 @@ parse = (source) ->
         if line.startsWith '//'
             continue
 
-        if line.startsWith 'end'
+        if line.startsWith 'end' # no function nesting yet
             continue
 
         if line.trim().length > 0 then test.functions.last().instructions.push

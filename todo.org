@@ -1,11 +1,12 @@
 #+TITLE: TEST INTERPRETER
 
-* Lookup [2/3]
+* Lookup [3/3]
 ** DONE by css
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE by css and text
    CLOSED: [2018-01-03 Wed 13:19]
-** TODO by model
+** DONE by model
+   CLOSED: [2018-01-04 Thu 08:57]
 * Actions [4/5]
 ** DONE click
    CLOSED: [2018-01-03 Wed 13:19]
@@ -16,7 +17,7 @@
 ** TODO back
 ** DONE expect
    CLOSED: [2018-01-03 Wed 13:19]
-* Functionality [6/8]
+* Functionality [7/8]
 ** DONE read file 
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE parse file
@@ -29,11 +30,18 @@
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE run test
    CLOSED: [2018-01-03 Wed 15:40]
-** TODO create test functions
+** DONE create test functions
+   CLOSED: [2018-01-04 Thu 12:34]
 ** TODO export test functions
 ** DONE add compiler directives
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE dictionaries
    CLOSED: [2018-01-03 Wed 15:39]
-* Syntax highlight for Atom
-* Set up reporter for issues with screenshots
+* DONE Syntax highlight for Atom
+  CLOSED: [2018-01-04 Thu 12:34]
+* DONE Set up reporter for issues with screenshots
+  CLOSED: [2018-01-04 Thu 13:30]
+* TODO Data driven tests
+* DONE investigate phantomJS
+  CLOSED: [2018-01-04 Thu 13:30]
+  PhantomJS is deprecated, chrome in headless mode is perfect for the job

@@ -1,23 +1,40 @@
+require 'require-cson'
+
 { warn, debug } = require './general'
 
 dictionary = {}
 
 replaceVariable = (variable) ->
-    dictionary[variable] or null
+    find(variable)
 
-add = (key, value) ->
-    dictionary[key] = value
+add = (key, value, target = dictionary) ->
+    keys = key.split '.'
+    if keys.length > 1
+        newKeys = keys.slice 1
+        newTarget = target[keys[0]]
+        if not newTarget then newTarget = {}
+        add newKeys.join('.'), value, newTarget
+    else
+        if target[key]
+            warn 'conflicting dictionary entries for ' + key
+        else
+            target[key] = value
 
 load = (fileName) ->
     entries = require fileName
     for key, value of entries
-        if not dictionary[key]
-            dictionary[key] = value
-        else
-            warn 'conflicting dictionary entries for ' + key + ', kept original value'
+        add(key, value)
+    debug 'loaded dictionary ' + fileName
     return
 
-add 'planner/graph', '\'#plannerGraph\''
+find = (key, target = dictionary) ->
+    keys = key.split '.'
+    if keys.length > 1
+        newKeys = keys.slice 1
+        newTarget = target[keys[0]]
+        if newTarget then find newKeys.join('.'), newTarget else null
+    else
+        target[key] or null
 
 module.exports =
     replaceVariable: replaceVariable

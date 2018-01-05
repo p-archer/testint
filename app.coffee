@@ -1,16 +1,18 @@
 require 'coffeescript/register'
 fs = require 'fs'
-moment = require 'moment'
 chalk = require 'chalk'
-{ spawn } = require 'child_process'
 
-{ log, warn, err, debug } = require './modules/general'
+{ log, warn, err, debug, runProtractor, showParsedStructure } = require './modules/general'
 { parse } = require './modules/parser'
 { transpile } = require './modules/transpile'
 { loadDictionary } = require './modules/dictionary'
 
 input = output = null
 args = process.argv.slice 2
+if args.length is 0
+    err 'no arguments provided, please refer to readme.org for usage\n'
+    return -1
+
 for arg, index in args
     switch arg
         when '--input', '-i' then input = args[index+1]
@@ -20,39 +22,26 @@ for arg, index in args
         when '--run', '-r' then runWhenFinished = true
         when '--headless', '-h' then runHeadless = true
 
-if not output then output = input.replace(/test$/, 'js')
-log()
-console.log 'transpiling', chalk.green input, chalk.yellow '>>>', chalk.green output
-log()
+if not input
+    err 'no input provided\n'
+    return -1
+
+if not output
+    output = input + '.js'
+
+console.log '\ntranspiling', chalk.green input, chalk.yellow '>>>', chalk.green output, '\n'
 
 source = fs.readFileSync __dirname + '/' + input, 'utf-8'
 parsed = parse source
 code = transpile parsed
 
+fs.writeFileSync __dirname + '/' + output, code, 'utf-8'
+
 if showStructure
-    log()
-    for key, value of parsed.directives
-        log key, value
+    showParsedStructure parsed
 
-    for func in parsed.functions
-        log()
-        log 'function', func.name
-        for line in func.instructions
-            log '\t' + line.text
-    log()
-
-str = code.join '\n'
 if showCode
-    log()
-    log str
-
-fs.writeFileSync __dirname + '/' + output, str, 'utf-8'
-log()
+    log '\n' + code + '\n'
 
 if runWhenFinished
-    targetConf = if not runHeadless then 'chrome.conf.js' else 'headless.conf.js'
-    child = spawn 'protractor', [targetConf, '--specs', output]
-    child.stdout.on 'data', (data) -> log data
-    child.on 'close', (code, signal) ->
-        debug 'finished running protractor (exit code ' + code + ')'
-        log()
+    runProtractor output, __dirname, runHeadless

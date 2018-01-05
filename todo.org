@@ -1,12 +1,13 @@
-#+TITLE: TEST INTERPRETER
+#+TITLE: TEST TRANSPILER
 
-* Lookup [3/3]
+* Lookup [3/4]
 ** DONE by css
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE by css and text
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE by model
    CLOSED: [2018-01-04 Thu 08:57]
+** TODO url
 * Actions [4/5]
 ** DONE click
    CLOSED: [2018-01-03 Wed 13:19]
@@ -33,15 +34,20 @@
 ** DONE create test functions
    CLOSED: [2018-01-04 Thu 12:34]
 ** TODO export test functions
+   Also, these functions should be available for use outside of the file they were implemented.
 ** DONE add compiler directives
    CLOSED: [2018-01-03 Wed 13:19]
 ** DONE dictionaries
    CLOSED: [2018-01-03 Wed 15:39]
-* DONE Syntax highlight for Atom
-  CLOSED: [2018-01-04 Thu 12:34]
-* DONE Set up reporter for issues with screenshots
-  CLOSED: [2018-01-04 Thu 13:30]
-* TODO Data driven tests
-* DONE investigate phantomJS
-  CLOSED: [2018-01-04 Thu 13:30]
-  PhantomJS is deprecated, chrome in headless mode is perfect for the job
+* Additional features [3/4]
+** DONE Syntax highlight for Atom
+   CLOSED: [2018-01-04 Thu 12:34]
+** DONE Set up reporter for issues with screenshots
+   CLOSED: [2018-01-04 Thu 13:30]
+** TODO Data driven tests
+** DONE investigate headless options
+   CLOSED: [2018-01-04 Thu 13:30]
+   PhantomJS is deprecated, chrome in headless mode is perfect for the job
+* Tech debt and architecture [0/1]
+** TODO refactor transpiler's toCode
+   Would be nice to have each instruction as a separate function with a well defined structure, registering each of them on the transpiler.

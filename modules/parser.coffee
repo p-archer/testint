@@ -4,7 +4,7 @@ parse = (source) ->
     lines = source.split '\n'
     test =
         directives:
-            title: 'test' + moment().format 'YYYYMMDD'
+            title: 'test-' + moment().format 'YYYYMMDD'
         functions: []
 
     for line, index in lines

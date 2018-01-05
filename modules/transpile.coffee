@@ -5,30 +5,53 @@ transpile = (test) ->
     code = []
     add = pushCode(code)
 
-    if test.directives.dictionary
-        for dict in test.directives.dictionary.split ','
-            loadDictionary dict.trim()
+    if test.directives.dictionaries
+        loadDictionaries test.directives.dictionaries.split ','
 
-    add 'describe(\'' + test.directives.title + '\', () => {'
-    for func in test.functions when func.instructions.length > 0 and func.type is 'test'
-        add '\t' + 'it(\'' + func.name + '\', () => {'
-        for instruction in func.instructions
-            add '\t\t' + toCode instruction
-        add '\t});'
+    if test.directives.modules
+        for mod in test.directives.modules.split ','
+            words = mod.trim().split ' '
+            if words.length is 1
+                add 'var ' + words[0].replace(/\./g, ' ').toCamelCase() + ' = require(\'./' + words[0] + '\');'
+            if words.length is 3 and words[1] is 'as'
+                add 'var ' + words[2] + ' = require(\'./' + words[0] + '\');'
         add ''
-    add '});'
 
+    add 'function run() {'
+    add '\tdescribe(\'' + test.directives.title + '\', () => {'
+    for func in test.functions when func.instructions.length > 0 and func.type is 'test'
+        add '\t\t' + 'it(\'' + func.name + '\', () => {'
+        for instruction in func.instructions
+            add '\t\t\t' + toCode instruction
+        add '\t\t});'
+    add '\t});'
+    add '}'
+
+    exports = ['run']
     for func in test.functions when func.instructions.length > 0 and func.type is 'func'
         [ name, params ] = func.name.match(/(.+)\((.*)\)/)[1..2]
         func.name = name.toCamelCase()
         func.variables = params.split(',').map((x) => x.trim())
-        add '\t' + 'function ' + func.name + '(' + func.variables.join(', ') + ') {'
+        add ''
+        add 'function ' + func.name + '(' + func.variables.join(', ') + ') {'
         for instruction in func.instructions
-            add '\t\t' + toCode instruction
-        add '\t}'
+            add '\t' + toCode instruction
+        add '}'
+        exports.push func.name
+
+    if exports.length > 0
+        add ''
+        add 'module.exports = {'
+        for entry in exports
+            add '\t' + entry + ': ' + entry + ','
+        add '};'
         add ''
 
-    return code
+    return code.join '\n'
+
+loadDictionaries = (dicts) ->
+    for dict in dicts
+        loadDictionary dict.trim()
 
 pushCode = (code) ->
     return (str) -> code.push(str)
@@ -62,11 +85,14 @@ toCode = (instruction) ->
             else time = +timeStr
         return 'browser.driver.sleep(' + time + ');'
 
-    if /^call \(.+\)( with \(.+\))$/.test text
-        name = text.match(/call \((.+?)\)/)[1]
-        params = text.match(/call \(.+?\) with \((.+)\)/)
-        if params then params = params[1] else params = ''
-        return '' + name.toCamelCase() + '(' + params + ');'
+    if /^call \(.+\)( from \(.+?\))?( with \(.+\))$/.test text
+        name = text.match(/call \((.+?)\)/)[1].toCamelCase()
+        if /^call \(.+\) from \(.+?\)/.test text
+            mod = text.match(/from \((.+?)\)/)[1]
+            name = mod.replace(/\./g, ' ').toCamelCase() + '.' + name
+        params = text.match(/call \(.+?\)( from \(.+?\))? with \((.+)\)/)
+        if params then params = params[2] else params = ''
+        return '' + name + '(' + params + ');'
 
     warn 'unknown or invalid #' + instruction.line + ': ' + text
     '//' + text

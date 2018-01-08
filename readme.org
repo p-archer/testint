@@ -1,0 +1,109 @@
+#+TITLE: Test transpiler
+
+* 1. About
+  This application is a NodeJS based transpiler for Protractor E2E tests.
+
+  Given an input file of simplified syntax this application turns it into a js file ready to be run by Protractor and Selenium.
+* 2. Usage
+** 2.1. Installing
+   Download and unpack, then install dependencies:
+   #+BEGIN_SRC bash
+   npm install coffeescript protractor -g
+   npm install
+   #+END_SRC
+   Update and start selenium:
+   #+BEGIN_SRC bash
+   webdriver-manager update
+   webdriver-manager start
+   #+END_SRC
+** 2.2. Running
+   ~webdriver-manager~ has to run in the background.
+   #+BEGIN_SRC bash
+   coffee app.coffee [arguments]
+   #+END_SRC
+*** 2.2.1 Arguments
+	- =--input, -i= -> specify input file (will be appended to CWD), this is the only mandatory input
+	- =--output, -o= -> specify output file (will be appended to CWD), if omitted, it will default to the input file with ~.js~ appended
+	- =--run, -r= -> run after transpiling (selenium has to run in the background)
+	- =--headless, -h= -> run in headless mode after transpiling (only works if --run is present)
+	- =--show-code, -sc= -> show output code
+	- =--show-structure, -ss= -> show parsed structure of input
+* 3. Code syntax
+** 3.1. Meta data
+   Currently there are only two meta directives that are being used throughout the application: title and dictionary.
+
+   You can specify arbitrary meta key-value pairs. Their syntax is:
+   #+BEGIN_SRC
+   #KEY_NAME = VALUE
+   #+END_SRC
+
+*** 3.1.1. Dictionaries
+	You can specify dictionaries, which are either json or cson files containing key-value pairs. Keys will be used as variable names for function targets (see below for more explanation).
+
+	Dictionaries should be separated by a comma.
+*** 3.1.2. Title
+	Will default to =test-TIMESTAMP= unless specified.
+** 3.2. File structure
+   Recommended structure is:
+   - meta data
+   - test and functions
+** 3.3. Test and Functions
+*** 3.3.1. Tests
+	Tests are executed sequentially, according to their position in the code. Tests are not exported.
+**** Syntax
+   #+BEGIN_SRC
+   *test* name of the test
+        instructions
+   *end* _//optional_
+   #+END_SRC
+*** 3.3.2. Functions
+	Functions are only run when they are called from inside a test. They will be exported, thus are available for usage outside of the test file.
+
+	Function parameters can be referenced in the instructions (usually as input).
+**** Syntax
+   #+BEGIN_SRC
+   *function* name of the test (parameters, ...)
+        instructions
+   *end* _//optional_
+   #+END_SRC
+** 3.4. Instructions
+*** 3.4.1. Load
+   #+BEGIN_SRC
+   load https://whatever_url/
+   #+END_SRC
+*** 3.4.2. Click
+   #+BEGIN_SRC
+   click (target)
+   #+END_SRC
+*** 3.4.3. Input
+   #+BEGIN_SRC
+   input (target) text 'input text'
+   input (target) text PARAMETER_NAME
+   #+END_SRC
+*** 3.4.4. Expect
+   #+BEGIN_SRC
+   expect (target) to be displayed 
+   expect (target) to not be present 
+   expect (target) to be enabled
+   #+END_SRC
+*** 3.4.5. Call
+   #+BEGIN_SRC
+   call (function name) with (parameters)
+   #+END_SRC
+*** 3.4.6. Wait
+   #+BEGIN_SRC
+   wait 5000
+   wait 10s
+   wait 1m
+   #+END_SRC
+** 3.5. Targets
+   Targets are HTML elements, you can refer to them explicitly (with css or model) or via an entry in the dictionary.
+   #+BEGIN_SRC
+   click ('.classy .stuff .here')
+   input (model vm.superModel) text 'blabla'
+   click ('.container .button' with text 'click bait')
+
+   click (@menu/about)
+   input (@form/email) text 'abc@gmail.com'
+   #+END_SRC
+   Dictionary entries must be referenced with the ~@~ character, and the appropriate dictionary has to be included via a meta directive.

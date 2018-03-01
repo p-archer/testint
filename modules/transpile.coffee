@@ -107,7 +107,7 @@ getTarget = (str) ->
         else
             target = variable
 
-    withModel = target.startsWith 'model';
+    withModel = target.startsWith 'model'
     withText = /' with text '/.test target
 
     if withModel

@@ -1,7 +1,0 @@
-{
-	"menu/planner": "'nav-bar md-toolbar .md-button' with text 'Planner'",
-	"menu/transactions": "'nav-bar md-toolbar .md-button' with text 'Transactions'",
-	"planner/graph": "'#plannerGraph'",
-	"login/password": "'#txtPassword'",
-	"transactions/tagFilter": "model search.tags"
-}
